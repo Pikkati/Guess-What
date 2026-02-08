@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess What - Jeopardy Training MVP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .login-section, .waiting-section, .game-section, .feedback-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .category {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .question {
+            background-color: #2980b9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .question:hover:not(.answered) {
+            background-color: #21618c;
+        }
+        .question.answered {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+        .players {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .player {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+        }
+        .current-player {
+            background-color: #f39c12;
+            color: white;
+        }
+        .question-display {
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #229954;
+        }
+        .feedback-form {
+            margin-top: 20px;
+        }
+        .feedback-form textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .chat {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Guess What - Jeopardy Training MVP</h1>
+
+        <div id="login-section" class="login-section active">
+            <h2>Join Game</h2>
+            <input type="text" id="player-name" placeholder="Enter your name" required>
+            <button onclick="joinGame()">Join Game</button>
+        </div>
+
+        <div id="waiting-section" class="waiting-section">
+            <h2>Waiting for another player...</h2>
+            <p>Please wait while we find an opponent for you.</p>
+        </div>
+
+        <div id="game-section" class="game-section">
+            <div class="players">
+                <div id="player1" class="player">Player 1: 0</div>
+                <div id="player2" class="player">Player 2: 0</div>
+            </div>
+
+            <div id="current-turn">Waiting for game to start...</div>
+
+            <div id="board" class="board">
+                <!-- Board will be populated by JavaScript -->
+            </div>
+
+            <div id="question-display" class="question-display" style="display: none;">
+                <h3 id="question-text"></h3>
+                <input type="text" id="answer-input" class="answer-input" placeholder="Your answer...">
+                <button onclick="submitAnswer()">Submit Answer</button>
+            </div>
+
+            <div id="game-result" style="display: none;">
+                <h2>Game Over!</h2>
+                <div id="final-scores"></div>
+                <div id="winner"></div>
+            </div>
+        </div>
+
+        <div id="feedback-section" class="feedback-section">
+            <h2>Feedback</h2>
+            <form class="feedback-form">
+                <label for="feedback-text">Please share your feedback about the game:</label>
+                <textarea id="feedback-text" placeholder="What did you like? What could be improved?"></textarea>
+                <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+            </form>
+            <div id="feedback-response"></div>
+        </div>
+
+        <div id="chat-section" style="display: none;">
+            <h3>Chat</h3>
+            <div id="chat-messages" class="chat"></div>
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentGame = null;
+        let currentQuestion = null;
+
+        function joinGame() {
+            const playerName = document.getElementById('player-name').value.trim();
+            if (playerName) {
+                socket.emit('joinGame', playerName);
+                document.getElementById('login-section').classList.remove('active');
+                document.getElementById('waiting-section').classList.add('active');
+            }
+        }
+
+        socket.on('waitingForOpponent', () => {
+            // Already showing waiting section
+        });
+
+        socket.on('gameStarted', (game) => {
+            currentGame = game;
+            document.getElementById('waiting-section').classList.remove('active');
+            document.getElementById('game-section').classList.add('active');
+            document.getElementById('chat-section').style.display = 'block';
+            updateBoard();
+            updatePlayers();
+            updateCurrentTurn();
+        });
+
+        socket.on('questionSelected', (data) => {
+            currentQuestion = data.question;
+            document.getElementById('question-text').textContent = data.question.question;
+            document.getElementById('question-display').style.display = 'block';
+            document.getElementById('board').style.display = 'none';
+        });
+
+        socket.on('answerResult', (data) => {
+            alert(`${data.player}'s answer: ${data.isCorrect ? 'Correct!' : 'Incorrect. The correct answer is: ' + data.correctAnswer}`);
+            updatePlayers();
+            document.getElementById('question-display').style.display = 'none';
+            document.getElementById('board').style.display = 'grid';
+            updateBoard();
+        });
+
+        socket.on('nextTurn', (data) => {
+            updateCurrentTurn();
+        });
+
+        socket.on('newRound', (game) => {
+            currentGame = game;
+            alert(`Round ${game.round} starts now!`);
+            updateBoard();
+            updatePlayers();
+            updateCurrentTurn();
+        });
+
+        socket.on('gameFinished', (data) => {
+            document.getElementById('game-result').style.display = 'block';
+            document.getElementById('board').style.display = 'none';
+            document.getElementById('question-display').style.display = 'none';
+
+            let scoresHtml = '<h3>Final Scores:</h3>';
+            data.finalScores.forEach(player => {
+                scoresHtml += `<p>${player.name}: ${player.score}</p>`;
+            });
+            document.getElementById('final-scores').innerHTML = scoresHtml;
+
+            if (data.winner) {
+                document.getElementById('winner').innerHTML = `<h3>Winner: ${data.winner.name}!</h3>`;
+            } else {
+                document.getElementById('winner').innerHTML = '<h3>It\'s a tie!</h3>';
+            }
+
+            // Show feedback section
+            document.getElementById('feedback-section').classList.add('active');
+        });
+
+        socket.on('playerDisconnected', (data) => {
+            alert(`${data.disconnectedPlayer} disconnected. Game ended.`);
+            resetGame();
+        });
+
+        socket.on('feedbackReceived', (message) => {
+            document.getElementById('feedback-response').textContent = message;
+        });
+
+        function submitAnswer() {
+            const answer = document.getElementById('answer-input').value.trim();
+            if (answer && currentGame) {
+                socket.emit('submitAnswer', { gameId: currentGame.id, answer });
+                document.getElementById('answer-input').value = '';
+            }
+        }
+
+        function updateBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+
+            // Add categories
+            Object.keys(currentGame.board).forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'category';
+                categoryElement.textContent = category;
+                boardElement.appendChild(categoryElement);
+            });
+
+            // Add questions
+            for (let i = 0; i < 2; i++) { // 2 questions per category for simplicity
+                Object.keys(currentGame.board).forEach(category => {
+                    const questions = currentGame.board[category];
+                    if (questions[i]) {
+                        const questionElement = document.createElement('div');
+                        questionElement.className = `question ${questions[i].answered ? 'answered' : ''}`;
+                        questionElement.textContent = `$${questions[i].value}`;
+                        if (!questions[i].answered) {
+                            questionElement.onclick = () => selectQuestion(category, questions[i].value);
+                        }
+                        boardElement.appendChild(questionElement);
+                    }
+                });
+            }
+        }
+
+        function selectQuestion(category, value) {
+            if (currentGame) {
+                socket.emit('selectQuestion', { gameId: currentGame.id, category, value });
+            }
+        }
+
+        function updatePlayers() {
+            if (currentGame) {
+                document.getElementById('player1').textContent = `${currentGame.players[0].name}: ${currentGame.players[0].score}`;
+                document.getElementById('player2').textContent = `${currentGame.players[1].name}: ${currentGame.players[1].score}`;
+
+                document.getElementById('player1').classList.toggle('current-player', currentGame.currentPlayer === 0);
+                document.getElementById('player2').classList.toggle('current-player', currentGame.currentPlayer === 1);
+            }
+        }
+
+        function updateCurrentTurn() {
+            if (currentGame) {
+                document.getElementById('current-turn').textContent = `Current turn: ${currentGame.players[currentGame.currentPlayer].name}`;
+            }
+        }
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedback-text').value.trim();
+            if (feedback && currentGame) {
+                socket.emit('submitFeedback', { gameId: currentGame.id, feedback });
+                document.getElementById('feedback-text').value = '';
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('chat-input').value.trim();
+            if (message) {
+                socket.emit('chatMessage', message);
+                document.getElementById('chat-input').value = '';
+            }
+        }
+
+        socket.on('chatMessage', (data) => {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.textContent = `${data.player}: ${data.message}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        function resetGame() {
+            currentGame = null;
+            currentQuestion = null;
+            document.getElementById('game-section').classList.remove('active');
+            document.getElementById('feedback-section').classList.remove('active');
+            document.getElementById('login-section').classList.add('active');
+            document.getElementById('game-result').style.display = 'none';
+            document.getElementById('chat-section').style.display = 'none';
+        }
+
+        // Allow submitting answer with Enter key
+        document.getElementById('answer-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+
+        // Allow sending chat with Enter key
+        document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
