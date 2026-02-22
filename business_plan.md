@@ -1,8 +1,8 @@
-# Business Plan for Guess What: Cloud-Based Jeopardy Training Platform
+# Business Plan for Guess What: Cloud-Based Trivia Training Platform
 
 ## Executive Summary
 
-Guess What is an innovative cloud-based gaming platform designed to train users to become exceptional Jeopardy players through competitive gameplay against other users or AI opponents. The platform features quick 2-round games that dynamically weight questions based on player weaknesses, while maintaining knowledge sharpness through repetition and reframing of questions in popular phrasing styles. It incorporates general popular trivia content and supports custom game formats, custom tournaments, and private chat functionality.
+Guess What is an innovative cloud-based gaming platform designed to train users to become exceptional trivia players through competitive gameplay against other users or AI opponents. The platform features quick 2-round games that dynamically weight questions based on player weaknesses, while maintaining knowledge sharpness through repetition and reframing of questions in popular phrasing styles. It incorporates general popular trivia content and supports custom game formats, custom tournaments, and private chat functionality.
 
 Inspired by the tournament ranking system of Lichess.org, Guess What will implement public ratings, strengths, and weaknesses analysis across different formats and subjects. The platform aims to capture a niche market of trivia enthusiasts, students, and professionals seeking to improve their knowledge and competitive skills.
 
@@ -11,10 +11,10 @@ With a projected market size of $X billion in the online trivia and educational 
 ## Company Description
 
 ### Mission Statement
-To democratize Jeopardy expertise by providing an accessible, engaging platform that combines competitive gaming with personalized learning, fostering a community of knowledgeable and strategic players.
+To democratize trivia expertise by providing an accessible, engaging platform that combines competitive gaming with personalized learning, fostering a community of knowledgeable and strategic players.
 
 ### Vision
-To become the premier online destination for Jeopardy training and trivia competition, recognized for its innovative AI-driven learning algorithms and vibrant tournament ecosystem.
+To become the premier online destination for trivia training and competition, recognized for its innovative AI-driven learning algorithms and vibrant tournament ecosystem.
 
 ### Business Model
 - Freemium model: Basic gameplay free, premium features via subscription
@@ -31,21 +31,21 @@ To be incorporated as a C-Corporation in [State/Country].
 The online gaming and educational technology markets are experiencing rapid growth. The global e-learning market is projected to reach $XXX billion by 202X, with gamification playing an increasingly important role. Trivia and quiz-based games represent a $X billion subset, with platforms like Trivia Crack and QuizUp demonstrating strong user engagement.
 
 ### Target Market
-- Primary: Trivia enthusiasts aged 18-45, particularly those interested in Jeopardy-style gameplay
+- Primary: Trivia enthusiasts aged 18-45, particularly those interested in quiz-style gameplay
 - Secondary: Students preparing for academic competitions, professionals seeking cognitive training
 - Tertiary: Educational institutions and corporate training programs
 
 ### Market Size and Growth
 - Total Addressable Market (TAM): $X billion (online trivia games)
-- Serviceable Addressable Market (SAM): $X billion (Jeopardy-specific training)
+- Serviceable Addressable Market (SAM): $X billion (trivia-specific training)
 - Serviceable Obtainable Market (SOM): $X million (initial target segment)
 
 Projected CAGR of X% over the next 5 years.
 
 ### Competitive Analysis
-- Direct Competitors: Trivia Crack, QuizUp, Jeopardy mobile apps
+- Direct Competitors: Trivia Crack, QuizUp, trivia mobile apps
 - Indirect Competitors: Lichess.org (chess), educational platforms like Duolingo
-- Competitive Advantage: AI-driven personalized learning, tournament system inspired by Lichess, focus on Jeopardy-specific training
+- Competitive Advantage: AI-driven personalized learning, tournament system inspired by Lichess, focus on trivia-specific training
 
 ### SWOT Analysis
 - Strengths: Innovative AI algorithms, community-driven tournaments, comprehensive analytics
@@ -79,7 +79,7 @@ Projected CAGR of X% over the next 5 years.
 
 ### Marketing Channels
 - Social media campaigns targeting trivia communities
-- Influencer partnerships with Jeopardy champions and trivia experts
+- Influencer partnerships with trivia champions and quiz experts
 - Content marketing through blogs and YouTube tutorials
 - App store optimization and paid advertising
 
