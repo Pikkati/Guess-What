@@ -1,11 +1,11 @@
-# Guess What MVP - Jeopardy Training Game
+# Guess What MVP - Trivia Training Game
 
-This is a minimal viable product (MVP) for the Guess What Jeopardy training platform. It allows two players to compete in a simplified Jeopardy-style game with basic features.
+This is a minimal viable product (MVP) for the Guess What trivia training platform. It allows two players to compete in a simplified trivia-style game with basic features.
 
 ## Features
 
 - **Two-player multiplayer**: Real-time gameplay between two players
-- **Jeopardy-style board**: 6 categories with 2 questions each ($200 and $400)
+- **Trivia-style board**: 6 categories with 2 questions each ($200 and $400)
 - **Turn-based gameplay**: Players alternate turns
 - **Scoring system**: Correct answers add points, incorrect answers deduct points
 - **Two rounds**: Game consists of two rounds with fresh boards
